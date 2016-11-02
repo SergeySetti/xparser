@@ -1,0 +1,18 @@
+{
+    "name": "sergeysetti/xparser",
+    "description": "Universal sites parser for Laravel",
+    "type": "library",
+    "require": {
+        "guzzlehttp/guzzle": "^6.2",
+        "laravel/framework": "^5",
+        "querypath/querypath": "^3.0"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sergey Setti",
+            "email": "setti@setti.biz"
+        }
+    ],
+    "minimum-stability": "dev"
+}
