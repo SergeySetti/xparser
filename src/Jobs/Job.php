@@ -1,6 +1,6 @@
 <?php
 
-namespace SergeySetti\Xparser\Jobs;
+namespace Xparser\Jobs;
 
 use Illuminate\Bus\Queueable;
 

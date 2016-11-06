@@ -1,6 +1,6 @@
 {
     "name": "sergeysetti/xparser",
-    "description": "Universal sites parser for Laravel",
+    "description": "Universal and flexible sites parser for Laravel",
     "type": "library",
     "require": {
         "guzzlehttp/guzzle": "^6.2",

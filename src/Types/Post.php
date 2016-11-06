@@ -1,18 +1,17 @@
 <?php
 
+namespace Xparser\Types;
 
-namespace SergeySetti\Xparser\Types;
-
-use SergeySetti\Xparser\QueryPath\QueryPath;
+use Xparser\QueryPath\QueryPath;
 
 class Post extends AbstractType
 {
     
     public function save($data)
     {
-        $post = \Post::firstOrCreate(['source' => $data->get('source')]);
+        $post = Post::firstOrCreate(['source' => $data->get('source')]);
         
-        /** @var \SergeySetti\Xparser\Post $post */
+        /** @var Post $post */
         $post->site_id = $this->siteConfig->siteId;
         $post->url = $data->get('url');
         $post->title = $data->get('title');
@@ -24,6 +23,8 @@ class Post extends AbstractType
         $post->author_link = $data->get('author_link');
         $post->date = $data->get('date');
         $post->authority = $data->get('authority');
+
+        $this->postProcessor($post);
         
         return $post->save();
     }

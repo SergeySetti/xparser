@@ -1,12 +1,11 @@
 <?php
 
 
-namespace SergeySetti\Xparser\Parsers\Configs;
+namespace Xparser\Parsers\Configs;
 
 
 use Carbon\Carbon;
 use Xparser\Helpers\Date;
-use Xparser\Parsers\Configs\Config;
 use Xparser\Types\Comment;
 use Xparser\Types\Post;
 
@@ -90,6 +89,11 @@ class NewsTwoRu extends Config implements ConfigInterface
 
                     return $tags;
                 },
+                'skip' => function(){
+                    $source = $this->qp->withHTML($this->html, 'h2 a')
+                        ->attr('href');
+                    return $source == null;
+                },
             ],
             Comment::class => [
                 'source' => function($node){
@@ -121,6 +125,10 @@ class NewsTwoRu extends Config implements ConfigInterface
                 'body' => function($node){
                     $comment = trim($node->find('.comment_text')->text());
                     return $comment;
+                },
+                'skip' => function($node){
+                    $url = $node->find('font:contains(url)')->parent()->attr('href');
+                    return $url == null;
                 },
             ]
         ];

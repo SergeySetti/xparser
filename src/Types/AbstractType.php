@@ -1,11 +1,11 @@
 <?php
 
 
-namespace SergeySetti\Xparser\Types;
+namespace Xparser\Types;
 
 
-use Illuminate\Support\Collection;
-use SergeySetti\Xparser\Parsers\Configs\ConfigInterface;
+use Xparser\Parsers\Configs\ConfigInterface;
+use Xparser\Parsers\Page;
 
 /**
  * @property ConfigInterface siteConfig
@@ -20,60 +20,84 @@ abstract class AbstractType
     public $html;
 
     public $fields;
+
+    /**
+     * Must save extracted data to the DB.
+     *
+     * @param \Illuminate\Support\Collection $data
+     * @return bool
+     */
+    abstract public function save($data);
+
+    /**
+     * Must return all nodes which must be processed
+     * using the fields parser.
+     *
+     * @return mixed
+     */
+    abstract public function all();
     
     public function __construct(ConfigInterface $siteConfig, $url)
     {
         $this->siteConfig = $siteConfig;
-        $this->html = Page::getByUrl($url);
+        $this->html = $this->loadHtml($url);
         $this->url = $url;
         $this->siteConfig->setHtml($this->html);
     }
-    
-    public function fields(ConfigInterface $siteConfig)
-    {
-        return $siteConfig->fields();
-    }
 
-    public function extract($type)
-    {
-        $data = collect();
-        
-        $fields = $this->fields($this->siteConfig)[$type];
-        
-        $allNodes = $this->all();
-
-        foreach ($allNodes as $node) {
-            $data->push($this->extractOne($node, $fields));
-        }
-        
-        return $data;
-    }
-
-    public function extractOne($node, $fields)
-    {
-        $data = new Collection();
-        $data->put('url', $this->url);
-        
-        foreach($fields as $fieldName => $field) {
-
-            $result = call_user_func($field, $node);
-
-            $data->put(
-                $fieldName,
-                $result
-            );
-        }
-
-        $this->save($data);
-
-        return $data;
-    }
-    
     /**
-     * @param Collection $data
+     * @param $url
+     * @return string
+     */
+    public function loadHtml($url)
+    {
+        return Page::getHtmlByUrl($url);
+    }
+
+    public function extract($fields)
+    {
+        foreach ($this->all() as $node) {
+            $this->extractOneAndSave($node, $fields);
+        }
+    }
+
+    public function extractOneAndSave($node, $fields)
+    {
+        if ($this->shouldNotSkip($node, $fields)) {
+            $data = $this->extractData($node, $fields);
+            $data->put('url', $this->url);
+            $this->save($data);
+        }
+    }
+
+    /**
+     * Should we don't skip and save this node?
+     *
+     * @param $node
+     * @param callable[] $fields
      * @return bool
      */
-    abstract public function save($data);
-    abstract public function all();
-    
+    private function shouldNotSkip($node, $fields)
+    {
+        /** @var \Closure $parseSkip */
+        $parseSkip = array_get($fields, 'skip');
+
+        return ! ($parseSkip && $parseSkip($node));
+    }
+
+    /**
+     * Extracts data from the node and converts the
+     * `fieldName => parser` mapping to the
+     * `fieldName => fieldValue`.
+     *
+     * @param $node
+     * @param callable[] $fields
+     * @return \Illuminate\Support\Collection
+     */
+    private function extractData($node, $fields)
+    {
+        return collect($fields)->map(function($parse) use ($node) {
+            return $parse($node);
+        });
+    }
 }

@@ -1,35 +1,46 @@
 <?php
 
-namespace SergeySetti\Xparser\Jobs;
+namespace Xparser\Jobs;
 
-use Xparser\Jobs\Job;
-use Illuminate\Contracts\Bus\SelfHandling;
-use Xparser\Jobs\Parse\ChoseUrl;
-use Xparser\Parsers\Configs\NewsTwoRu;
+use Xparser\Parsers\Configs\ConfigInterface;
+use Xparser\Parsers\ParserBuilder;
 use Xparser\Parsers\Sniffer;
-use Xparser\Site;
 use Xparser\Types\AbstractType;
-use Xparser\Url;
+use Xparser\Url\Url;
+use Xparser\Url\UrlPipeline;
+use Xparser\Xparser;
 
-class Parse extends Job implements SelfHandling
+
+class Parse extends Job
 {
 
     /**
      * @var Site $site
      */
     public $site;
+
     /**
      * @var Url $url
      */
     public $url;
-    
+
     /**
-     * Create a new job instance.
-     *
+     * @var ConfigInterface
      */
-    public function __construct()
+    public $siteConfig;
+    /**
+     * @var Xparser
+     */
+    protected $client;
+
+    /**
+     * Parse constructor.
+     *
+     * @param Xparser $client
+     */
+    public function __construct(Xparser $client)
     {
-        //
+        $this->client = $client;
     }
 
     /**
@@ -38,27 +49,35 @@ class Parse extends Job implements SelfHandling
      */
     public function handle()
     {
-        $this->url = app()->make(ChoseUrl::class)->chose();
-        $this->url->touch();
-        
-        $this->site = $this->url->site;
-
-        $urlSniffer = new Sniffer($this->site);
-        $urlSniffer->proceed($this->url);
-        
-        $siteConfig = app()->make('Xparser\Parsers\Configs\\'.$this->site->config_name);
-        $pageEntities = array_keys($siteConfig->fields());
-
-        foreach ($pageEntities as $entityClass) {
-            /** @var AbstractType $entity */
-            $entity = app()->make($entityClass, [$siteConfig, $this->url->url]);
-            $entity->extract($entityClass);
-            
-        }
-        
-        $this->url->processed = true;
-        $this->url->save();
+        $builder = new ParserBuilder($this->client);
+        $parser = $builder->build();
+        $this->client->setParser($parser);
         
         return $this;
     }
+
+    /**
+     * @param $url
+     */
+    public function prepare($url)
+    {
+        $this->url = $url;
+        $this->url->touch();
+        $this->site = $this->url->site;
+        $this->siteConfig = $this->makeSiteConfig($this->site);
+    }
+    
+    public function parseUrlsFromPage()
+    {
+        $urlSniffer = new Sniffer($this->site);
+        $urlSniffer->proceed($this->url);
+    }
+
+    public function parseDataFromPages()
+    {
+        foreach ($this->getSchema() as $entityClass => $fields) {
+            $this->makeTypeEntity($entityClass)->extract($fields);
+        }
+    }
+
 }

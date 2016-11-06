@@ -1,10 +1,10 @@
 <?php
 
 
-namespace SergeySetti\Xparser\Parsers\Configs;
+namespace Xparser\Parsers\Configs;
 
 
-use SergeySetti\Xparser\QueryPath\QueryPath;
+use Xparser\QueryPath\QueryPath;
 
 class Config
 {
