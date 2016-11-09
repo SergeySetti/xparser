@@ -57,7 +57,7 @@ class Client extends Xparser
     public function registerTypes()
     {
         return [
-            TypeExample::class,
+            PostType::class,
         ];
     }
 }
