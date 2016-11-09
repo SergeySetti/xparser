@@ -8,6 +8,9 @@ use Xparser\Xparser;
 
 class ClientForSnifferStub extends Xparser
 {
+    /*
+     * Provide the main url for website destination
+     * */
     protected $siteUrl = 'http://wikipedia.org';
 
     protected $urlsToCrawl = [

@@ -12,6 +12,11 @@ abstract class AbstractType
 {
 
     /**
+     * @var Collection
+     */
+    public $data;
+
+    /**
      * @var string
      */
     protected $html;
@@ -91,15 +96,25 @@ abstract class AbstractType
      */
     protected function grabFields()
     {
-        $data = collect();
+        $this->data = collect();
 
         foreach ($this->fields() as $name => $field) {
-            $data->put($name, $this->extractField($field));
+            $this->data->put($name, $this->extractField($field));
         }
 
-        return $data;
+        return $this->data;
     }
 
+    /**
+     * Get the collected data for the type
+     *
+     * @return Collection
+     */
+    public function data()
+    {
+        return $this->data;
+    }
+    
     public function setClient($client)
     {
         $this->client = $client;
