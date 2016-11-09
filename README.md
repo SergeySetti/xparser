@@ -1,7 +1,10 @@
 ## Xparser
 Universal site parser for Laravel 5
 
-[![License](https://poser.pugx.org/sergeysetti/xparser/LICENSE)](https://packagist.org/packages/sergeysetti/xparser)
+[![Latest Stable Version](https://poser.pugx.org/sergeysetti/xparser/v/stable)](https://packagist.org/packages/sergeysetti/xparser)
+[![Latest Unstable Version](https://poser.pugx.org/sergeysetti/xparser/v/unstable)](https://packagist.org/packages/sergeysetti/xparser)
+[![Total Downloads](https://poser.pugx.org/sergeysetti/xparser/downloads)](https://packagist.org/packages/sergeysetti/xparser)
+[![License](https://poser.pugx.org/sergeysetti/xparser/license)](https://packagist.org/packages/sergeysetti/xparser)
 
 
 ### Install
