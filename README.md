@@ -132,7 +132,7 @@ You can describe any number of Types. Just don't forget do register them in yor 
 After preparation is done, create your Client's instance:
 
 ```php
-$parser = Xparser::create($client);
+$parser = Xparser::create(new Client);
 ```
 And run the parsing iteration
 ```php
