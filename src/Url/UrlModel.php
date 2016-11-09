@@ -9,7 +9,8 @@ use Xparser\Site\Site;
  * Xparser\UrlModel
  * 
  * @method static Builder| UrlModel expectProcessing($site)
- * 
+ *
+ * @property string url
  */
 class UrlModel extends \Eloquent 
 {
@@ -28,16 +29,19 @@ class UrlModel extends \Eloquent
      *
      * @param Site $site
      *
-     * @return static
+     * @return Url
      */
     public static function chooseNext(Site $site)
     {
         $next = self::expectProcessing($site)->first();
 
-        return $next ?: self::create([
+        /** @var UrlModel $urlModel */
+        $urlModel = $next ?: self::create([
             'site_key' => $site->getKey(),
             'url' => $site->getUrl(),
         ]);
+
+        return new Url($urlModel->url, $site->getUrl());
     }
 
     /**

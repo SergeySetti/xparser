@@ -1,13 +1,13 @@
 <?php
 
 
-namespace Xparser\Parsers;
+namespace Xparser\HttpClient;
 
 
 use GuzzleHttp\Client;
 use Xparser\Url\Url;
 
-class Page
+class HttpClient
 {
     /**
      * Returns HTML of page from the given URL.
@@ -25,7 +25,7 @@ class Page
             ],
         ]);
 
-        $response = $client->request('GET', $url);
+        $response = $client->request('GET', $url->url());
         return $response->getBody()->getContents();
     }
 }

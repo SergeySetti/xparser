@@ -4,29 +4,33 @@
 namespace Xparser;
 
 
+use Illuminate\Support\Collection;
 use Xparser\Helpers\ClassToShortHash;
-use Xparser\Jobs\Parse;
 use Xparser\Parsers\Parser;
 use Xparser\Parsers\ParserBuilder;
+use Xparser\Types\TypeInstancesCollection;
+use Xparser\Url\UrlPatternsCollection;
 
 abstract class Xparser implements XparserInterface
 {
     protected $instances;
     protected $urlPatterns;
+    protected $urlsToCrawl = [];
     protected $siteUrl;
     protected $parser;
 
+    abstract public function registerTypes();
+
+    /**
+     * @param Xparser $client
+     *
+     * @return Parser
+     */
     public static function create(Xparser $client)
     {
         $parserBuilder = new ParserBuilder($client);
 
         return $parserBuilder->build();
-    }
-
-    public function parse()
-    {
-        $job = new Parse($this);
-        dispatch($job);
     }
 
     public function setParser($parser)
@@ -42,22 +46,6 @@ abstract class Xparser implements XparserInterface
         return $this->parser;
     }
 
-    protected function getUrlPatterns()
-    {
-        if(! empty($this->urlPatterns)) {
-            return $this->urlPatterns;
-        }
-
-        $this->urlPatterns = [];
-        
-        foreach ($this->collectTypesInstances() as $typesInstance) {
-            /** @var AbstractType $typesInstance */
-            $this->urlPatterns[] = $typesInstance->urlPatterns();
-        }
-        
-        return array_flatten($this->urlPatterns);
-    }
-    
     public function getClientKey()
     {
         return ClassToShortHash::convert(get_class($this));
@@ -67,7 +55,19 @@ abstract class Xparser implements XparserInterface
     {
         return $this->siteUrl;
     }
-    
-    abstract public function registerTypes();
-    
+
+    /**
+     * @return Collection
+     */
+    public function getUsefulUrlsPatterns()
+    {
+        if (empty($this->instances)) {
+            $this->instances = new TypeInstancesCollection($this);
+        }
+
+        $urlPatterns = new UrlPatternsCollection($this->instances);
+
+        return $urlPatterns->all()->merge($this->urlsToCrawl);
+    }
+
 }

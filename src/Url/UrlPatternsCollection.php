@@ -4,10 +4,14 @@
 namespace Xparser\Url;
 
 
+use Illuminate\Support\Collection;
 use Xparser\Types\TypeInstancesCollection;
 
 class UrlPatternsCollection
 {
+    /**
+     * @var Collection
+     */
     protected $items;
     
     /**
@@ -19,6 +23,10 @@ class UrlPatternsCollection
     {
         $this->typeInstances = $typeInstancesCollection;
     }
+
+    /**
+     * @return Collection
+     */
     public function all()
     {
         if(empty($this->items)) {
@@ -28,6 +36,9 @@ class UrlPatternsCollection
         return $this->items;
     }
 
+    /**
+     * @return Collection
+     */
     protected function collectUrlsSchemas()
     {
         $this->items = [];
@@ -36,7 +47,7 @@ class UrlPatternsCollection
             $this->items[] = $typeItem->urlPatterns();
         }
 
-        return array_flatten($this->items);
+        return collect(array_flatten($this->items));
     }
 
 }

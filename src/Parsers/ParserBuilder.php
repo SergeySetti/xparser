@@ -4,7 +4,6 @@
 namespace Xparser\Parsers;
 
 
-use SergeySetti\Xparser\Parsers\Sniffer;
 use Xparser\Site\Site;
 use Xparser\Url\UrlPipeline;
 use Xparser\Xparser;
@@ -31,7 +30,7 @@ class ParserBuilder
     public function __construct(Xparser $client)
     {
         $this->client = $client;
-        $this->parser = new Parser();
+        $this->parser = app()->make(Parser::class);
         $this->parser->setClient($this->client);
     }
     
@@ -43,7 +42,6 @@ class ParserBuilder
 
         $this->setSite();
         $this->setUrlsPipeline();
-        $this->setSniffer();
         $this->client->setParser($this->parser);
 
         return $this->parser;
@@ -65,11 +63,5 @@ class ParserBuilder
         );
         $this->parser->setUrlsPipeline($urlsPipeline);
     }
-
-    protected function setSniffer()
-    {
-        $this->sniffer = new Sniffer($this->client);
-    }
-
 
 }

@@ -3,14 +3,21 @@
 
 namespace Xparser\Parsers;
 
-use Illuminate\Support\Collection;
+use SergeySetti\Xparser\Parsers\Sniffer;
+use Xparser\AbstractType;
+use Xparser\HttpClient\HttpClient;
+use Xparser\Jobs\Job;
 use Xparser\Site\Site;
 use Xparser\Types\TypeInstancesCollection;
 use Xparser\Url\UrlPipeline;
 use Xparser\Xparser;
 
-class Parser
+class Parser extends Job
 {
+    /**
+     * @var HttpClient
+     */
+    private $httpClient;
     /**
      * @var Xparser
      */
@@ -28,8 +35,44 @@ class Parser
      */
     private $types;
 
+    public function __construct(HttpClient $httpClient)
+    {
+        $this->httpClient = $httpClient;
+    }
+
+    public function handle()
+    {
+        $urlToProceed = $this->getUrlToProcess();
+
+        $html = $this->httpClient->getHtmlByUrl($urlToProceed);
+
+        $this->grabUsefulUrls($html);
+
+        /** @var AbstractType $type */
+        foreach ($this->getTypes()->items() as $type) {
+            $type->setParser($this);
+            $type->setHtml($html);
+            $type->setUrl($urlToProceed);
+            $type->grabPageData();
+            $type->save();
+        }
+    }
+
+    public function grabUsefulUrls($html)
+    {
+        $sniffer = app()->make(
+            Sniffer::class, [$this->getClient(), $html]
+        );
+        $sniffer->proceed();
+    }
+
+    protected function getUrlToProcess()
+    {
+        return $this->getUrlsPipeline()->getNextUrl();
+    }
+
     /**
-     * @return mixed
+     * @return Xparser
      */
     public function getClient()
     {
@@ -49,7 +92,7 @@ class Parser
     }
 
     /**
-     * @return mixed
+     * @return Site
      */
     public function getSite()
     {
@@ -69,7 +112,7 @@ class Parser
     }
 
     /**
-     * @return mixed
+     * @return UrlPipeline
      */
     public function getUrlsPipeline()
     {
@@ -93,13 +136,13 @@ class Parser
      */
     public function getTypes()
     {
-        if (empty($this->types )) {
+        if (empty($this->types)) {
             return $this->types
-                = new TypeInstancesCollection($this->client);         
+                = new TypeInstancesCollection($this->client);
         }
 
         return $this->types;
     }
-    
+
 
 }

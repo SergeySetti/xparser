@@ -4,8 +4,8 @@
 namespace SergeySetti\Xparser\Parsers;
 
 use Illuminate\Support\Collection;
-use Xparser\Parsers\Page;
-use Xparser\Url\Url;
+use Xparser\Parsers\HttpClient;
+use Xparser\Url\UrlModel;
 use Xparser\Xparser;
 
 /**
@@ -22,65 +22,66 @@ use Xparser\Xparser;
  */
 class Sniffer
 {
-    public function __construct(Xparser $client)
+    protected $site;
+
+    public function __construct(Xparser $client, $html, UrlModel $urlModel)
     {
-        $this->client = $client;
+        $this->client   = $client;
+        $this->html     = $html;
+        $this->urlModel = $urlModel;
+    }
+
+
+    public function proceed()
+    {
+        $this->saveNeeded($this->getNeeded());
     }
 
     /**
-     * @param Page $page
-     *
-     */
-    public function proceed(Page $page)
-    {
-        $this->saveNeeded($this->getNeeded($page));
-    }
-
-    /**
-     *
-     * @param Url $url
      *
      * @return Collection
+     * @internal param Url $url
+     *
      * @internal param Page $page
      */
-    private function getNeeded(Url $url)
+    protected function getNeeded()
     {
-        $html = Page::getHtmlByUrl($url);
-        
-        $needed = new Collection();
-        $patterns = $this->getPatterns();
-        $patterns->each(function($pattern) use (&$needed, $html){
-            preg_match_all($pattern, $html, $found);
-            if( ! empty($found)) {
-                $needed = $needed->merge(array_unique(array_get($found, 0)));
+        $needed   = collect();
+        $patterns = $this->client->getUsefulUrlsPatterns();
+        $patterns->each(function ($pattern) use (&$needed) {
+            preg_match_all('/' . $pattern . '/im', $this->html, $found);
+            if (! empty($found)) {
+                $needed = $needed
+                    ->merge(array_unique(array_get($found, 0)));
             }
         });
-        
+
         return $needed;
     }
 
     /**
      * @param Collection $urls
+     *
      * @return bool
      */
-    private function saveNeeded(Collection $urls)
+    protected function saveNeeded(Collection $urls)
     {
-        $urls->each(function($item){
-            $exists = Url::where('site_id', $this->site->id)
+        $createdModels = collect();
+
+        $urls->each(function ($item) use ($createdModels) {
+            $exists = $this->urlModel
+                ->where('site_key', $this->client->getClientKey())
                 ->where('url', $item)->count();
-            if( ! $exists) {
-                Url::create([
-                    'site_id' => $this->site->id,
-                    'url' => $item,
+            if (! $exists) {
+                $model = $this->urlModel->create([
+                    'site_key' => $this->client->getClientKey(),
+                    'url'      => $item,
                 ]);
+                $createdModels->push($model);
             }
         });
-        
-        return ;
+
+        return $createdModels;
     }
 
-    public function getPatterns()
-    {
-        return $this->site->patterns;
-    }
 }

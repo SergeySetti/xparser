@@ -5,7 +5,7 @@ namespace Xparser\Types;
 
 
 use Xparser\Parsers\Configs\ConfigInterface;
-use Xparser\Parsers\Page;
+use Xparser\Parsers\HttpClient;
 
 /**
  * @property ConfigInterface siteConfig
@@ -51,7 +51,7 @@ abstract class AbstractType
      */
     public function loadHtml($url)
     {
-        return Page::getHtmlByUrl($url);
+        return HttpClient::getHtmlByUrl($url);
     }
 
     public function extract($fields)
