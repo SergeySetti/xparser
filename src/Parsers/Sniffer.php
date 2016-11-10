@@ -1,7 +1,7 @@
 <?php
 
 
-namespace SergeySetti\Xparser\Parsers;
+namespace Xparser\Parsers;
 
 use Illuminate\Support\Collection;
 use Xparser\Parsers\HttpClient;

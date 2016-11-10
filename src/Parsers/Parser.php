@@ -3,7 +3,6 @@
 
 namespace Xparser\Parsers;
 
-use SergeySetti\Xparser\Parsers\Sniffer;
 use Xparser\AbstractType;
 use Xparser\HttpClient\HttpClient;
 use Xparser\Jobs\Job;

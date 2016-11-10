@@ -1,7 +1,7 @@
 <?php
 
 
-namespace packages\sergeysetti\xparser\tests\Job;
+namespace Xparser\Tests\Job;
 
 
 use Carbon\Carbon;

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace packages\sergeysetti\xparser\tests\Url;
+namespace Xparser\Tests\Url;
 
 
 use Illuminate\Foundation\Testing\DatabaseMigrations;

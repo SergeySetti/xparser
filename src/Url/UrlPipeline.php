@@ -4,12 +4,11 @@
 namespace Xparser\Url;
 
 
-use packages\sergeysetti\xparser\src\Url\UrlModel;
 use Xparser\Xparser;
 
 class UrlPipeline
 {
-    
+
     /**
      * UrlPipeline constructor.
      *
@@ -18,7 +17,7 @@ class UrlPipeline
      */
     public function __construct(Xparser $client, \Xparser\Url\UrlModel $urlModel)
     {
-        $this->client = $client;
+        $this->client   = $client;
         $this->urlModel = $urlModel;
     }
 

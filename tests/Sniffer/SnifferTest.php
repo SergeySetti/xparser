@@ -1,12 +1,12 @@
 <?php
 
 
-namespace packages\sergeysetti\xparser\tests\Sniffer;
+namespace Xparser\Tests\Sniffer;
 
 
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use SergeySetti\Xparser\Parsers\Sniffer;
+use Xparser\Parsers\Sniffer;
 use Xparser\Tests\Clients\Stubs\ClientForSnifferStub;
 use Xparser\Tests\Clients\TypeTest;
 
