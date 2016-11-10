@@ -38,12 +38,13 @@ use Xparser\Xparser;
 class Client extends Xparser
 {
     /*
-     * Provide the main url for website destination
+     * Provide the main url for destination website
      * */
     protected $siteUrl = 'http://example.com';
 
     /*
-     * Declare an URL patterns, which will be recognized as useful.
+     * Declare an internal URL patterns of the website, 
+     * which will be recognized as useful.
      * */
     protected $urlsToCrawl = [
         '\/?page=[a-zA-Z0-9_-]+',
@@ -65,9 +66,9 @@ class Client extends Xparser
 
 ##### Type example 
 
-In your "Type" classes you must specify which page to look for. Type mapped to the page by url schemas. For example, the page with URL schema `\/?post=[a-z0-9-_]+` must be mapped to the `PageClient`, which contains corresponded rule. 
+In your "Type" classes you must specify which page to look for. Type mapped to the page by its url schemas. For example, the page with URL schema `\/?post=[a-z0-9-_]+` can be mapped to the `PageClient`, which contains corresponded rule. 
 
-One interesting mandatory in Types is `fields()` - here we do our man job: detect the data fields, take it and post-process if it is necessary. The of this job collected in internal property `$data`
+One interesting mandatory method in Types is `fields()` - here we do our man job: detect the data fields, take it and post-process if need it. The results of this job collected in internal property `$data`.
 
 ```php
 use Xparser\Xparser;
@@ -77,8 +78,8 @@ class PostType extends AbstractType
 
     /*
      * Describe the patterns, which URLs will 
-     * be mapped to the Type. From this and only pages 
-     * we will grab the data
+     * be mapped to the Type. From pages of this and 
+     * only URLs schemas matches system will grab the data
      * 
      * */
     public function urlPatterns()
@@ -89,12 +90,13 @@ class PostType extends AbstractType
     }
 
     /*
-     * Here you always have access to the page HTML through
-     * `$this->html()` call. Grab the page data ane way you want.
-     * It can be QueryPath library, Symfony DomCrawler or 
-     * pure regular expressions. Later grabbed results 
-     * can be accessed by the same fields names 
-     * by calling `$this->data()` in Type's 'save()' method.
+     * Here you always can access to the page HTML through
+     * `$this->html()` call. Grab the page data any way you want.
+     * It can done with tools like QueryPath library, 
+     * Symfony DomCrawler or pure regular expressions. 
+     * Later grabbed results can be accessed by the 
+     * same fields names by calling `$this->data()` 
+     * in Type's 'save()' method.
      * 
      * */
     public function fields()
@@ -112,8 +114,8 @@ class PostType extends AbstractType
     }
 
     /*
-     * Final steps goes here. By calling `$this->data()` we take 
-     * collected data and saves it any way we can. Method `data()`
+     * Final steps goes here. With `$this->data()` call we take 
+     * collected data and saves it any way we want. Method `data()`
      * return the collection, in whith fields names named corresponding
      * to `fields()` method.
      * 
