@@ -116,7 +116,7 @@ class PostType extends AbstractType
     /*
      * Final steps goes here. With `$this->data()` call we take 
      * collected data and saves it any way we want. Method `data()`
-     * return the collection, in whith fields names named corresponding
+     * returns the collection, in whith fields names named corresponding
      * to `fields()` method.
      * 
      * */
