@@ -68,7 +68,7 @@ class Client extends Xparser
 
 In your "Type" classes you must specify which page to look for. Type mapped to the page by its url schemas. For example, the page with URL schema `\/?post=[a-z0-9-_]+` can be mapped to the `PageClient`, which contains corresponded rule. 
 
-One interesting mandatory method in Types is `fields()` - here we do our man job: detect the data fields, take it and post-process if need it. The results of this job collected in internal property `$data`.
+One interesting mandatory method in Types is `fields()` - here we do our man job: detect the page fields, take it and post-process if need it. The results of this job collected in internal property `$data`.
 
 ```php
 use Xparser\Xparser;
