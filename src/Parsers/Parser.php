@@ -53,7 +53,12 @@ class Parser extends Job
             $type->setParser($this);
             $type->setHtml($html);
             $type->setUrl($urlToProceed);
-            $type->grabPageData();
+            $data = $type->grabPageData();
+
+            if ($data->isEmpty()) {
+                continue;
+            }
+            
             $type->save();
         }
     }

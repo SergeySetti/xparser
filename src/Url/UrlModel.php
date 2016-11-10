@@ -11,6 +11,7 @@ use Xparser\Site\Site;
  * @method static Builder| UrlModel expectProcessing($site)
  *
  * @property string url
+ * @property bool processed
  */
 class UrlModel extends \Eloquent 
 {
@@ -41,6 +42,9 @@ class UrlModel extends \Eloquent
             'url' => $site->getUrl(),
         ]);
 
+        $urlModel->processed = true;
+        $urlModel->save();
+            
         return new Url($urlModel->url, $site->getUrl());
     }
 

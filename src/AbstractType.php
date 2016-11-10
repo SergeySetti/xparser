@@ -14,7 +14,7 @@ abstract class AbstractType
     /**
      * @var Collection
      */
-    public $data;
+    protected $data;
 
     /**
      * @var string
@@ -112,6 +112,10 @@ abstract class AbstractType
      */
     public function data()
     {
+        if (empty($this->data)) {
+            return collect();
+        }
+        
         return $this->data;
     }
     
