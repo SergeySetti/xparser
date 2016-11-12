@@ -52,7 +52,7 @@ class Sniffer
             preg_match_all('/' . $pattern . '/im', $this->html, $found);
             if (! empty($found)) {
                 $needed = $needed
-                    ->merge(array_unique(array_get($found, 0)));
+                    ->merge(array_unique(array_get($found, 0)))->unique();
             }
         });
 

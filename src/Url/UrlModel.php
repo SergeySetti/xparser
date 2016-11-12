@@ -59,8 +59,7 @@ class UrlModel extends \Eloquent
     {
         $query
             ->where('site_key', $site->getKey())
-            ->whereNull('processed')
-            ->orWhere('processed', false)
+            ->where('processed', false)
             ->oldest('updated_at');
     }
     
