@@ -75,7 +75,7 @@ class Sniffer
             if (! $exists) {
                 $model = $this->urlModel->create([
                     'site_key' => $this->client->getClientKey(),
-                    'url'      => $item,
+                    'url'      => html_entity_decode($item),
                 ]);
                 $createdModels->push($model);
             }
