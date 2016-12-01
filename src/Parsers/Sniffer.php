@@ -67,15 +67,16 @@ class Sniffer
     protected function saveNeeded(Collection $urls)
     {
         $createdModels = collect();
-
+        
         $urls->each(function ($item) use ($createdModels) {
+            $item = html_entity_decode($item);
             $exists = $this->urlModel
                 ->where('site_key', $this->client->getClientKey())
                 ->where('url', $item)->count();
             if (! $exists) {
                 $model = $this->urlModel->create([
                     'site_key' => $this->client->getClientKey(),
-                    'url'      => html_entity_decode($item),
+                    'url'      => $item,
                 ]);
                 $createdModels->push($model);
             }
