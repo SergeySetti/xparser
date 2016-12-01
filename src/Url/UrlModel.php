@@ -37,7 +37,7 @@ class UrlModel extends \Eloquent
         $next = self::expectProcessing($site)->first();
 
         /** @var UrlModel $urlModel */
-        $urlModel = $next ?: self::create([
+        $urlModel = $next ?: self::firstOrCreate([
             'site_key' => $site->getKey(),
             'url' => $site->getUrl(),
         ]);
