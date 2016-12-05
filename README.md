@@ -1,5 +1,5 @@
 ## Xparser
-Universal site parser for Laravel 5
+Universal site scraper and parser for Laravel 5
 
 [![Latest Stable Version](https://poser.pugx.org/sergeysetti/xparser/v/stable)](https://packagist.org/packages/sergeysetti/xparser)
 [![Latest Unstable Version](https://poser.pugx.org/sergeysetti/xparser/v/unstable)](https://packagist.org/packages/sergeysetti/xparser)
