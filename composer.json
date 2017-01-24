@@ -14,7 +14,6 @@
             "email": "setti@setti.biz"
         }
     ],
-    "minimum-stability": "dev",
     "autoload": {
         "psr-4": {
             "Xparser\\": "src/",
