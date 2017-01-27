@@ -5,6 +5,7 @@ namespace Xparser\Parsers;
 
 
 use Xparser\Site\Site;
+use Xparser\Url\UrlModel;
 use Xparser\Url\UrlPipeline;
 use Xparser\Xparser;
 
@@ -58,9 +59,12 @@ class ParserBuilder
     protected function setUrlsPipeline()
     {
         $urlsPipeline = app()->make(
-            UrlPipeline::class, 
-            [$this->parser->getClient()]
+            UrlPipeline::class
         );
+
+        $urlsPipeline->setClient($this->parser->getClient());
+        $urlsPipeline->setUrlModel(new UrlModel());
+        
         $this->parser->setUrlsPipeline($urlsPipeline);
     }
 

@@ -23,15 +23,19 @@ use Xparser\Xparser;
 class Sniffer
 {
     protected $site;
-
-    public function __construct(Xparser $client, $html, UrlModel $urlModel)
-    {
-        $this->client   = $client;
-        $this->html     = $html;
-        $this->urlModel = $urlModel;
-    }
-
-
+    /**
+     * @var Xparser
+     */
+    protected $client;
+    /**
+     * @var string
+     */
+    protected $html;
+    /**
+     * @var UrlModel
+     */
+    protected $urlModel;
+    
     public function proceed()
     {
         $this->saveNeeded($this->getNeeded());
@@ -70,11 +74,11 @@ class Sniffer
         
         $urls->each(function ($item) use ($createdModels) {
             $item = html_entity_decode($item);
-            $exists = $this->urlModel
+            $exists = $this->getUrlModel()
                 ->where('site_key', $this->client->getClientKey())
                 ->where('url', $item)->count();
             if (! $exists) {
-                $model = $this->urlModel->create([
+                $model = $this->getUrlModel()->create([
                     'site_key' => $this->client->getClientKey(),
                     'url'      => $item,
                 ]);
@@ -83,6 +87,42 @@ class Sniffer
         });
 
         return $createdModels;
+    }
+
+    /**
+     * @return UrlModel
+     */
+    public function getUrlModel(): UrlModel
+    {
+        if (! empty($this->urlModel)) {
+            return $this->urlModel;
+        }
+
+        return new UrlModel();
+    }
+
+    /**
+     * @param UrlModel $urlModel
+     */
+    public function setUrlModel(UrlModel $urlModel)
+    {
+        $this->urlModel = $urlModel;
+    }
+
+    /**
+     * @param string $html
+     */
+    public function setHtml(string $html)
+    {
+        $this->html = $html;
+    }
+
+    /**
+     * @param Xparser $client
+     */
+    public function setClient(Xparser $client)
+    {
+        $this->client = $client;
     }
 
 }

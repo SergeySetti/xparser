@@ -65,8 +65,12 @@ class Parser extends Job
     public function grabUsefulUrls($html)
     {
         $sniffer = app()->make(
-            Sniffer::class, [$this->getClient(), $html]
+            Sniffer::class
         );
+
+        $sniffer->setClient($this->getClient());
+        $sniffer->setHtml($html);
+        
         $sniffer->proceed();
     }
 

@@ -38,9 +38,9 @@ class JobTest extends \TestCase
         $parser = Xparser::create($client);
 
         dispatch($parser);
-
-        $this->seeInDatabase('xparser_urls', ['url' => '/&page=123']);
-        $this->seeInDatabase('xparser_urls', ['url' => '/&item=777']);
+        
+        $this->assertDatabaseHas('xparser_urls', ['url' => '/&page=123']);
+        $this->assertDatabaseHas('xparser_urls', ['url' => '/&item=777']);
     }
 
     public function testThatTakenAnOldestUrl()
@@ -56,7 +56,7 @@ class JobTest extends \TestCase
                 return
                     $argument instanceof Url &&
                     $client->siteUrl() . 'some_oldest_url' == $argument->url();
-            }));
+            }))->andReturn('...');
 
         $this->app->bind(HttpClient::class, function ($app) use ($httpClientMock) {
             return $httpClientMock;

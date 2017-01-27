@@ -8,23 +8,56 @@ use Xparser\Xparser;
 
 class UrlPipeline
 {
+    /**
+     * @var Xparser
+     */
+    protected $client;
 
     /**
-     * UrlPipeline constructor.
-     *
-     * @param Xparser $client
-     * @param \Xparser\Url\UrlModel $urlModel
+     * @var UrlModel
      */
-    public function __construct(Xparser $client, \Xparser\Url\UrlModel $urlModel)
+    protected $urlModel;
+    
+    public function getNextUrl()
     {
-        $this->client   = $client;
+        return $this->getUrlModel()->chooseNext(
+            $this->getClient()->getParser()->getSite()
+        );
+    }
+
+    /**
+     * @param Xparser $client
+     */
+    public function setClient(Xparser $client)
+    {
+        $this->client = $client;
+    }
+
+    /**
+     * @param UrlModel $urlModel
+     */
+    public function setUrlModel(UrlModel $urlModel)
+    {
         $this->urlModel = $urlModel;
     }
 
-    public function getNextUrl()
+    /**
+     * @return UrlModel
+     */
+    public function getUrlModel(): UrlModel
     {
-        return $this->urlModel->chooseNext(
-            $this->client->getParser()->getSite()
-        );
+        if (isset($this->urlModel)) {
+            return $this->urlModel;
+        }
+
+        return new UrlModel();
+    }
+
+    /**
+     * @return Xparser
+     */
+    public function getClient(): Xparser
+    {
+        return $this->client;
     }
 }

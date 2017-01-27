@@ -30,11 +30,14 @@ class SnifferTest extends TypeTest
         $client = app()->make(ClientForSnifferStub::class);
 
         $sniffer = app()->make(
-            Sniffer::class, [$client, $this->htmlSample]
+            Sniffer::class
         );
+        
+        $sniffer->setClient($client);
+        $sniffer->setHtml($this->htmlSample);
 
         $sniffer->proceed();
 
-        $this->seeInDatabase('xparser_urls', ['url' => '/&page=123']);
+        $this->assertDatabaseHas('xparser_urls', ['url' => '/&page=123']);
     }
 }
