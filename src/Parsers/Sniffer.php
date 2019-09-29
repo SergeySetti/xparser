@@ -7,6 +7,7 @@ use Illuminate\Support\Collection;
 use Xparser\Parsers\HttpClient;
 use Xparser\Url\UrlModel;
 use Xparser\Xparser;
+use Illuminate\Support\Arr;
 
 /**
  * This class extracts URLs from HTML from the given
@@ -35,7 +36,7 @@ class Sniffer
      * @var UrlModel
      */
     protected $urlModel;
-    
+
     public function proceed()
     {
         $this->saveNeeded($this->getNeeded());
@@ -56,7 +57,7 @@ class Sniffer
             preg_match_all('/' . $pattern . '/im', $this->html, $found);
             if (! empty($found)) {
                 $needed = $needed
-                    ->merge(array_unique(array_get($found, 0)))->unique();
+                    ->merge(array_unique(Arr::get($found, 0)))->unique();
             }
         });
 
@@ -71,7 +72,7 @@ class Sniffer
     protected function saveNeeded(Collection $urls)
     {
         $createdModels = collect();
-        
+
         $urls->each(function ($item) use ($createdModels) {
             $item = html_entity_decode($item);
             $exists = $this->getUrlModel()

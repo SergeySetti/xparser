@@ -6,6 +6,7 @@ namespace Xparser\Url;
 
 use Illuminate\Support\Collection;
 use Xparser\Types\TypeInstancesCollection;
+use Illuminate\Support\Arr;
 
 class UrlPatternsCollection
 {
@@ -13,7 +14,7 @@ class UrlPatternsCollection
      * @var Collection
      */
     protected $items;
-    
+
     /**
      * UrlPatternsCollection constructor.
      *
@@ -47,7 +48,7 @@ class UrlPatternsCollection
             $this->items[] = $typeItem->urlPatterns();
         }
 
-        return collect(array_flatten($this->items));
+        return collect(Arr::flatten($this->items));
     }
 
 }
