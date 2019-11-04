@@ -37,7 +37,7 @@ class TypeInstancesCollection
         $this->items = [];
 
         foreach ($this->client->registerTypes() as $type) {
-            $this->items[] = new $type;
+            $this->items[] = app()->get($type) ;
         }
 
         return collect($this->items);
